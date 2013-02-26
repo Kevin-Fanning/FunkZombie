@@ -7,8 +7,6 @@
 #include <exception>
 #include <assert.h>
 
-#include "Vertex.h"
-
 void ShaderProgram::createProgram()
 {
 	m_programID = glCreateProgram();
@@ -69,20 +67,18 @@ void ShaderProgram::finalize()
 	glValidateProgram(m_programID);
 
 	//get the locations of all of the input variables
-	//glGenBuffers(1, &m_VAO);
-	//glBindVertexArray(m_VAO);
 	m_posLocation = glGetAttribLocation(m_programID, "Position");
 	m_uvLocation = glGetAttribLocation(m_programID, "TexCoord");
 	m_colLocation = glGetUniformLocation(m_programID, "Color");
 	m_MVPLocation = glGetUniformLocation(m_programID, "MVP");
-	//assert(m_colLocation != 0xFFFFFFFF);
+	assert(m_colLocation != 0xFFFFFFFF);
 	assert(m_posLocation != 0xFFFFFFFF);
 	assert(m_uvLocation != 0xFFFFFFFF);
 	glVertexAttribPointer(m_posLocation, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0);
 	glVertexAttribPointer(m_uvLocation, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (GLvoid*)(3*sizeof(float)));
 
 	m_samplerLocation = glGetUniformLocation(m_programID, "gSampler");
-	//assert(m_samplerLocation != 0xFFFFFFFF);
+	assert(m_samplerLocation != 0xFFFFFFFF);
 }
 
 void ShaderProgram::useProgram()

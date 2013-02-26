@@ -5,7 +5,6 @@
 #include <memory>
 
 #include "ShaderProgram.h"
-#include "Vertex.h"
 
 class Renderer2D
 {
@@ -17,16 +16,18 @@ public:
 
 	void setColor(glm::vec4 color);
 	void setColor(float r, float g, float b);
-	void drawSquare(int x, int y, int w, int h);
-	void drawSquare(int x, int y, int w, int h, int depth);
+
+	void clear(float r, float g, float b);
+
+	void draw(int x, int y, int w, int h);
+	void draw(std::string filename, int x, int y, int w, int h);
+	void draw(int x, int y, int w, int h, int depth);
 
 protected:
-	GLuint m_VBO;
-	GLint m_posLocation;
-	GLint m_colLocation;
-	ShaderProgram m_shaderProgram;
+	void useTexture(GLuint texID);
 
-	GLuint m_texID;
+	GLuint m_VBO;
+	ShaderProgram m_shaderProgram;
 
 	int m_screenWidth;
 	int m_screenHeight;

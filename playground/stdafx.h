@@ -10,7 +10,14 @@
 #include <stdio.h>
 #include <tchar.h>
 
-#define WINDOW_WIDTH 1024
-#define WINDOW_HEIGHT 768
-
 // TODO: reference additional headers your program requires here
+#include <memory>
+#include <iostream>
+#include <GL/glew.h>
+#include <GL/glfw.h>
+#include <SOIL.h>
+#include <assert.h>
+
+
+
+#include "FZApp.h"
