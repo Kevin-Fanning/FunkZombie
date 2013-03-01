@@ -30,6 +30,10 @@ int main(int argc, char* argv[])
 	double lastFrame = 0;
 
 	bool running = true;
+
+	GLuint tex1 = g_pApp->m_resMan->getHandle(&Resource("thing.png"));
+	GLuint tex2 = g_pApp->m_resMan->getHandle(&Resource("thing2.png"));
+
 	while (running)
 	{
 		if (glfwGetKey(GLFW_KEY_ESC) || !glfwGetWindowParam(GLFW_OPENED))
@@ -44,18 +48,14 @@ int main(int argc, char* argv[])
 		{
 			xPos -= speed * delta;
 		}
-
-
-		g_pApp->m_renderer->clear(0.4f, 0.3f, 0.8f);
-
-		g_pApp->m_renderer->setColor(glm::vec4(1.f, 1.f, 1.f, 1.f));
-		g_pApp->m_renderer->draw("thing.png", xPos, 110, 256, 256);
-
-		g_pApp->m_renderer->setColor(glm::vec4(1.0f, 0.5f, 0.3f, 1.0f));
-		g_pApp->m_renderer->draw(100, xPos, 128, 128);
-
-		g_pApp->m_renderer->setColor(glm::vec4(1.f, 1.f, 1.f, 0.4f));
-		g_pApp->m_renderer->draw(xPos, xPos, 64, 64);
+		g_pApp->m_renderer->clear(0.4f, 0.3, 0.8f);
+		g_pApp->m_renderer->beginBatch();
+		g_pApp->m_renderer->draw(tex1, 20, 20, 128, 128, 0, 0, 64, 64, 1.f, 1.f, 1.f );
+		g_pApp->m_renderer->draw(tex1, 148, 20, 128, 128, 64, 0, 64, 64, 1.f, 1.f, 1.f);
+		g_pApp->m_renderer->draw(tex2, 20, 20, 256, 256);
+		g_pApp->m_renderer->draw(tex1, 20, 148, 128, 128, 0, 64, 64, 64, 1.f, 1.f, 1.f );
+		g_pApp->m_renderer->draw(tex1, 148, 148, 128, 128, 64, 64, 64, 64, 1.f, 1.f, 1.f);
+		g_pApp->m_renderer->endBatch();
 
 		glfwSwapBuffers();
 
@@ -74,6 +74,7 @@ int main(int argc, char* argv[])
 			index = 0;
 		}
 	}
+	delete g_pApp;
 	return 0;
 }
 

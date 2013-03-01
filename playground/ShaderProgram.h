@@ -3,6 +3,8 @@
 class ShaderProgram
 {
 public:
+	~ShaderProgram();
+
 	void createProgram();
 	void loadShader(GLenum shaderType, char* filename);
 	void finalize();

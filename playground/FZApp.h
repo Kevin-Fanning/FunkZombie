@@ -6,8 +6,8 @@ class FZApp
 public:
 	FZApp();
 
-	Renderer2D* m_renderer;
-	ResourceManager* m_resMan;
+	std::unique_ptr<Renderer2D> m_renderer;
+	std::unique_ptr<ResourceManager> m_resMan;
 
 	bool InitInstance(int screenWidth, int screenHeight);
 

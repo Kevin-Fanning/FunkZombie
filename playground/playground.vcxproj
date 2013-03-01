@@ -85,8 +85,10 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="SpriteInfo.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FZApp.cpp" />
@@ -101,7 +103,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="thing.tga" />
     <None Include="VertexShader.glsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
@@ -115,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="thing.png" />
+    <Image Include="thing2.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

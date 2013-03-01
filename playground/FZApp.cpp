@@ -36,10 +36,10 @@ bool FZApp::InitInstance(int screenWidth, int screenHeight)
 	glCullFace(GL_BACK);
 	glEnable(GL_CULL_FACE);
 
-	m_renderer = new Renderer2D();
+	m_renderer = std::unique_ptr<Renderer2D>(new Renderer2D());
 	m_renderer->Init(screenWidth, screenHeight);
 
-	m_resMan = new ResourceManager();
+	m_resMan = std::unique_ptr<ResourceManager>(new ResourceManager());
 
 	m_isRunning = true;
 	return true;

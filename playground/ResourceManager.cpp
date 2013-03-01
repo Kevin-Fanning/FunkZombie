@@ -9,6 +9,10 @@ ResourceManager::ResourceManager(void)
 
 ResourceManager::~ResourceManager(void)
 {
+	for (std::map<std::string, int>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+	{
+		glDeleteTextures(1, (GLuint*)&((*i).second));
+	}
 }
 
 GLuint ResourceManager::getHandle(Resource* r)
@@ -35,7 +39,7 @@ GLuint ResourceManager::load(Resource* r)
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	m_resources[r->m_name] = texID;
 	return texID;
@@ -43,12 +47,13 @@ GLuint ResourceManager::load(Resource* r)
 
 GLuint ResourceManager::find(Resource* r)
 {
-	if (m_resources.find(r->m_name) == m_resources.end())
+	auto name = m_resources.find(r->m_name);
+	if (name == m_resources.end())
 	{
 		return 0;
 	}
 	else
 	{
-		return m_resources[r->m_name];
+		return name->second;
 	}
 }

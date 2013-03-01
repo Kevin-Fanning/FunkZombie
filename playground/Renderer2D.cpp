@@ -18,7 +18,9 @@ void Renderer2D::Init(int screenWidth, int screenHeight)
 
 	glGenBuffers(1, &m_VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &m_IBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 
 	m_shaderProgram.createProgram();
 	m_shaderProgram.loadShader(GL_VERTEX_SHADER, "VertexShader.glsl");
@@ -26,30 +28,29 @@ void Renderer2D::Init(int screenWidth, int screenHeight)
 	m_shaderProgram.finalize();
 	m_shaderProgram.useProgram();
 
-	//glGenTextures(1, &m_texID);
-	//glGenTextures(1, &m_texID2);
-	//glActiveTexture(GL_TEXTURE0);
-
-	//glBindTexture(GL_TEXTURE_2D, m_texID);
-	//int height, width;
-	//unsigned char* img = SOIL_load_image("thing.png", &width, &height, 0, SOIL_LOAD_RGBA);
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
-	//SOIL_free_image_data(img);
-
-	//glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-	//glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-	//glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-	//glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	//glBindTexture(GL_TEXTURE_2D, m_texID2);
-	//img = SOIL_load_image("thing2.png", &width, &height, 0, SOIL_LOAD_RGBA);
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
-	//SOIL_free_image_data(img);
-
 	glUniform1i(m_shaderProgram.getSamplerLocation(), 0);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	m_batchBegun = false;
+	m_numQueSprites = 0;
+
+	m_vertices.reserve(MAX_SPRITES * VERTICES_PER_SPRITE);
+	m_spriteInfo.reserve(MAX_SPRITES);
+
+	//The indices never change, even if we don't use all of them.
+	//It makes sense to just load them all now and save the work later
+	m_indices.reserve(MAX_SPRITES * 2 * 3);
+	for (int i = 0; i < MAX_SPRITES * VERTICES_PER_SPRITE; i += VERTICES_PER_SPRITE)
+	{
+		m_indices.push_back(i);
+		m_indices.push_back(i+2);
+		m_indices.push_back(i+1);
+		m_indices.push_back(i+1);
+		m_indices.push_back(i+2);
+		m_indices.push_back(i+3);
+	}
 }
 
 void Renderer2D::setColor(glm::vec4 color)
@@ -61,57 +62,143 @@ void Renderer2D::setColor(float r, float g, float b)
 	glUniform4f(m_shaderProgram.getColLocation(), r, g, b, 1.0f);
 }
 
+
 void Renderer2D::clear(float r, float g, float b)
 {
 	glClearColor(r, g, b, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer2D::draw(int x, int y, int w, int h)
+void Renderer2D::beginBatch()
 {
-	float posX = 2.0f * x / m_screenWidth - 1.0f;
-	float posY = 1.0f - 2.0f * y / m_screenHeight - 2.0f*h/m_screenHeight;
+	if (m_batchBegun)
+	{
+		std::cout << "Batch has already begun" << std::endl;
+		return;
+	}
 
-	glm::mat4 translation, scale;
-	translation = glm::translate(glm::mat4(1.0f), glm::vec3(posX, posY, 0));
-
-	scale = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f * w / m_screenWidth,2.0f*h/m_screenHeight, 1.f));
-	transformation = translation * scale;
-	glUniformMatrix4fv(m_shaderProgram.getMVPLocation(), 1, GL_FALSE, &transformation[0][0]);
-	glUniform1i(m_shaderProgram.getSamplerLocation(), 0);
-
-	m_shaderProgram.enableVertexAttribArray();
-
-	glActiveTexture(GL_TEXTURE0);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	m_shaderProgram.disableVertexAttribArray();
 }
-
+void Renderer2D::draw(unsigned int texID,int x,int y,int w,int h)
+{
+	m_spriteInfo.push_back(SpriteInfo(texID, x, y, w, h, 0, 0, w, h, 1.f, 1.f, 1.f));
+}
 void Renderer2D::draw(std::string name, int x, int y, int w, int h)
 {
-	GLuint texLocation = g_pApp->m_resMan->getHandle(&Resource(name));
-	glBindTexture(GL_TEXTURE_2D, texLocation);
-	draw(x, y, w, h);
+	GLuint texID = g_pApp->m_resMan->getHandle(&Resource(name));
+	m_spriteInfo.push_back(SpriteInfo(texID, x, y, w, h, 0, 0, w, h, 1.f, 1.f, 1.f));
 }
 
-void Renderer2D::draw(int x, int y, int w, int h, int depth)
+void Renderer2D::draw(std::string name,int x, int y, int w, int h, int sx, int sy, int sw, int sh, float r, float g, float b)
 {
-	m_curDepth = depth;
-	draw(x,y,w,h);
-	m_curDepth = 0;
+	GLuint texID = g_pApp->m_resMan->getHandle(&Resource(name));
+	m_spriteInfo.push_back(SpriteInfo(texID, x, y, w, h, sx, sy, sw, sh, r, g, b));
+}
+
+void Renderer2D::draw(unsigned int texID,int x,int y,int w,int h, int sx,int sy,int sw,int sh,float r,float g,float b)
+{
+	m_spriteInfo.push_back(SpriteInfo(texID, x, y, w, h, sx, sy, sw, sh, r, g, b));
+}
+
+void Renderer2D::endBatch()
+{
+	//sort by texture
+	std::sort(m_spriteInfo.begin(), m_spriteInfo.begin() + m_spriteInfo.size(), [](SpriteInfo const x, SpriteInfo const y) -> bool
+            {
+				return x.texID < y.texID;
+            });
+
+	//Go through the spriteInfo array, and if the texture changes, render what we have so far
+	GLuint curTex = 0;
+	for (int i = 0; i < m_spriteInfo.size(); ++i)
+	{
+		//m_spriteInfo[i].print(std::cout);
+		if (m_spriteInfo[i].texID != curTex)
+		{
+			//Render what we got
+			renderBatch();
+			m_numQueSprites = 0;
+			curTex = m_spriteInfo[i].texID;
+			useTexture(curTex);
+		}
+		//add this to the buffer
+		addSpriteVertices(m_spriteInfo[i]);
+		m_numQueSprites++;
+	}
+	//Render the remaining sprites
+	renderBatch();
+	m_numQueSprites = 0;
+	m_spriteInfo.clear();
+}
+
+void Renderer2D::addSpriteVertices(SpriteInfo si)
+{
+	float posX = 2.0f * si.x / m_screenWidth - 1.0f;
+	float posY = -2.0f/ m_screenHeight * si.y + 1;
+
+	float scaleX = 2.f * si.w / m_screenWidth;
+	float scaleY = 2.f * si.h / m_screenHeight;
+
+	float uvPosx = float(si.sx) / si.w;
+	float uvPosy = float(si.sy) / si.h;
+
+	float uvScaleX = float(si.sw) / si.w;
+	float uvScaleY = float(si.sh) / si.h;
+
+	float top = posY;
+	float bot = posY - scaleY;
+	float left = posX;
+	float right = posX + scaleX;
+
+	Vertex TopLeft(
+		glm::vec3(left, top, 0.f),
+		glm::vec3(si.r, si.g, si.b),
+		glm::vec2(uvPosx, uvPosy)
+	);
+
+	Vertex TopRight(
+		glm::vec3(right, top, 0.f),
+		glm::vec3(si.r, si.g, si.b),
+		glm::vec2(uvPosx + uvScaleX, uvPosy)
+	);
+
+	Vertex BotLeft(
+		glm::vec3(left, bot, 0.f),
+		glm::vec3(si.r, si.g, si.b),
+		glm::vec2(uvPosx, uvPosy + uvScaleY)
+	);
+
+	Vertex BotRight(
+		glm::vec3(right, bot, 0.f),
+		glm::vec3(si.r, si.g, si.b),
+		glm::vec2(uvPosx + uvScaleX, uvPosy + uvScaleY)
+	);
+	m_vertices.push_back(TopLeft);
+	m_vertices.push_back(TopRight);
+	m_vertices.push_back(BotLeft);
+	m_vertices.push_back(BotRight);
 }
 
 void Renderer2D::useTexture(GLuint texID)
 {
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texID);
+	glUniform1i(m_shaderProgram.getSamplerLocation(), 0);
 }
 
-float Renderer2D::vertices[30] = {
-		0.f,  1.f, 0.0f, 0.0f, 0.0f, // Top-left
-		0.f, 0.f, 0.0f, 0.0f, 1.0f,  // Bottom-left
-		1.f, 1.f, 0.0f, 1.0f, 0.0f, // Top-right
-		1.f, 1.f, 0.0f, 1.0f, 0.0f, // Top-right
-		0.f, 0.f, 0.0f, 0.0f, 1.0f,  // Bottom-left
-		1.f, 0.f, 0.0f, 1.0f, 1.0f // Bottom-right
-};
+void Renderer2D::renderBatch()
+{
+	//Give the data to the gpu and render. Obviously this is a waste if there is nothing to draw
+	if (m_vertices.size() > 0)
+	{
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float)*VERTEX_SIZE*m_vertices.size(), &m_vertices[0], GL_DYNAMIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int)*6*m_numQueSprites, &m_indices[0], GL_DYNAMIC_DRAW);
+		m_shaderProgram.enableVertexAttribArray();
+
+		glActiveTexture(GL_TEXTURE0);
+		glDrawElements(GL_TRIANGLES, m_numQueSprites*6, GL_UNSIGNED_INT, 0);
+
+		m_shaderProgram.disableVertexAttribArray();
+
+		m_vertices.clear();
+	}
+}

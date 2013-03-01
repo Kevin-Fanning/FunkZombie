@@ -39,6 +39,12 @@
     <ClInclude Include="FZApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -70,12 +76,12 @@
     <None Include="VertexShader.glsl">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="thing.tga">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="thing.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="thing2.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
