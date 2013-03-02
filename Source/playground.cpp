@@ -1,4 +1,4 @@
-// playground.cpp : Defines the entry point for the console application.
+﻿// playground.cpp : Defines the entry point for the console application.
 //
 #include "stdafx.h"
 
@@ -32,8 +32,10 @@ int main(int argc, char* argv[])
 	bool running = true;
 
 	GLuint tex1 = g_pApp->m_resMan->getHandle(&Resource("Assets/thing.png"));
-	GLuint tex2 = g_pApp->m_resMan->getHandle(&Resource("Assets/thing2.png"));
+	GLuint tex2 = g_pApp->m_resMan->getHandle(&Resource("Assets/A.png"));
 
+	int x = 10;
+	std::cout << (int)L'A' << std::endl;
 	while (running)
 	{
 		if (glfwGetKey(GLFW_KEY_ESC) || !glfwGetWindowParam(GLFW_OPENED))
@@ -42,19 +44,17 @@ int main(int argc, char* argv[])
 		}
 		if (glfwGetKey(GLFW_KEY_UP))
 		{
-			xPos += speed * delta;
+			x = 60;
 		}
-		if (glfwGetKey(GLFW_KEY_DOWN))
+		else 
 		{
-			xPos -= speed * delta;
+			x = 10;
 		}
-		g_pApp->m_renderer->clear(0.4f, 0.3, 0.8f);
+		g_pApp->m_renderer->clear(0.4f, 0.3f, 0.8f);
 		g_pApp->m_renderer->beginBatch();
-		g_pApp->m_renderer->draw(tex1, 20, 20, 128, 128, 0, 0, 64, 64, 1.f, 1.f, 1.f );
-		g_pApp->m_renderer->draw(tex1, 148, 20, 128, 128, 64, 0, 64, 64, 1.f, 1.f, 1.f);
-		g_pApp->m_renderer->draw(tex2, 20, 20, 256, 256);
-		g_pApp->m_renderer->draw(tex1, 20, 148, 128, 128, 0, 64, 64, 64, 1.f, 1.f, 1.f );
-		g_pApp->m_renderer->draw(tex1, 148, 148, 128, 128, 64, 64, 64, 64, 1.f, 1.f, 1.f);
+		g_pApp->m_renderer->draw(tex1, x, 10, 128, 128);
+		//g_pApp->m_renderer->draw(tex2, 200, 200, 50, 40);
+		g_pApp->m_renderer->drawString(L"AVAVAVAV THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG!", 200, 400);
 		g_pApp->m_renderer->endBatch();
 
 		glfwSwapBuffers();

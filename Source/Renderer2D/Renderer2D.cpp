@@ -11,25 +11,38 @@ Renderer2D::~Renderer2D(void)
 {
 }
 
+/**
+*Initializes the renderer
+* @param screenWidth The width of your screen
+* @param screenHeight The height of your screen
+*/
 void Renderer2D::Init(int screenWidth, int screenHeight)
 {
+	//TEMP CODE
+	m_fonts.init();
+	arialID = m_fonts.addFont("Assets/Arial.ttf", 25);
+	//END TEMP CODE
 	m_screenWidth = screenWidth;
 	m_screenHeight = screenHeight;
 
+	//Generate some buffers for the renderer to use
 	glGenBuffers(1, &m_VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
 	glGenBuffers(1, &m_IBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 
+	//Create and link a shader program with some hard coded shaders
 	m_shaderProgram.createProgram();
 	m_shaderProgram.loadShader(GL_VERTEX_SHADER, "Assets/VertexShader.glsl");
 	m_shaderProgram.loadShader(GL_FRAGMENT_SHADER, "Assets/FragmentShader.glsl");
 	m_shaderProgram.finalize();
 	m_shaderProgram.useProgram();
 
+	//Tell the shader we are using TEXTURE0
 	glUniform1i(m_shaderProgram.getSamplerLocation(), 0);
 
+	//Let us use alpha textures
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -80,23 +93,33 @@ void Renderer2D::beginBatch()
 }
 void Renderer2D::draw(unsigned int texID,int x,int y,int w,int h)
 {
-	m_spriteInfo.push_back(SpriteInfo(texID, x, y, w, h, 0, 0, w, h, 1.f, 1.f, 1.f));
-}
-void Renderer2D::draw(std::string name, int x, int y, int w, int h)
-{
-	GLuint texID = g_pApp->m_resMan->getHandle(&Resource(name));
-	m_spriteInfo.push_back(SpriteInfo(texID, x, y, w, h, 0, 0, w, h, 1.f, 1.f, 1.f));
-}
-
-void Renderer2D::draw(std::string name,int x, int y, int w, int h, int sx, int sy, int sw, int sh, float r, float g, float b)
-{
-	GLuint texID = g_pApp->m_resMan->getHandle(&Resource(name));
-	m_spriteInfo.push_back(SpriteInfo(texID, x, y, w, h, sx, sy, sw, sh, r, g, b));
+	m_spriteInfo.push_back(SpriteInfo(texID, x, y, w, h, w, h, 0, 0, w, h, 1.f, 1.f, 1.f));
 }
 
 void Renderer2D::draw(unsigned int texID,int x,int y,int w,int h, int sx,int sy,int sw,int sh,float r,float g,float b)
 {
-	m_spriteInfo.push_back(SpriteInfo(texID, x, y, w, h, sx, sy, sw, sh, r, g, b));
+	m_spriteInfo.push_back(SpriteInfo(texID, x, y, w, h, w, h, sx, sy, sw, sh, r, g, b));
+}
+
+void Renderer2D::drawString(std::wstring str, int x, int y)
+{
+	std::shared_ptr<Font> arial = m_fonts.getFont(arialID);
+	int penX = x;
+	int penY = y;
+	for (int i = 0; i < str.length(); ++i)
+	{
+		unsigned int code = (unsigned int)str[i] - 32;
+		CharInfo info = arial->m_charInfo[code];
+		if (str[i] == ' ')
+		{
+			penX += info.ax;
+		}
+		else
+		{
+			m_spriteInfo.push_back(SpriteInfo(arial->m_atlas, penX + info.bl, penY - info.bt, info.bw, info.bh, 1024, 1024, info.tx, info.ty, info.bw, info.bh, 1.f, 1.f, 1.f));
+			penX += info.ax;
+		}
+	}
 }
 
 void Renderer2D::endBatch()
@@ -109,9 +132,8 @@ void Renderer2D::endBatch()
 
 	//Go through the spriteInfo array, and if the texture changes, render what we have so far
 	GLuint curTex = 0;
-	for (int i = 0; i < m_spriteInfo.size(); ++i)
+	for (unsigned int i = 0; i < m_spriteInfo.size(); ++i)
 	{
-		//m_spriteInfo[i].print(std::cout);
 		if (m_spriteInfo[i].texID != curTex)
 		{
 			//Render what we got
@@ -138,11 +160,11 @@ void Renderer2D::addSpriteVertices(SpriteInfo si)
 	float scaleX = 2.f * si.w / m_screenWidth;
 	float scaleY = 2.f * si.h / m_screenHeight;
 
-	float uvPosx = float(si.sx) / si.w;
-	float uvPosy = float(si.sy) / si.h;
+	float uvPosx = float(si.sx) / si.imgX;
+	float uvPosy = float(si.sy) / si.imgY;
 
-	float uvScaleX = float(si.sw) / si.w;
-	float uvScaleY = float(si.sh) / si.h;
+	float uvScaleX = float(si.sw) / si.imgX;
+	float uvScaleY = float(si.sh) / si.imgY;
 
 	float top = posY;
 	float bot = posY - scaleY;
@@ -182,6 +204,7 @@ void Renderer2D::useTexture(GLuint texID)
 {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texID);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glUniform1i(m_shaderProgram.getSamplerLocation(), 0);
 }
 

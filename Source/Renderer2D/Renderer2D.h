@@ -1,12 +1,9 @@
 #pragma once
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <GL/glew.h>
-#include <memory>
 
 #include "ShaderProgram.h"
 #include "SpriteInfo.h"
 #include "Vertex.h"
+#include "FontManager.h"
 
 #define MAX_SPRITES 2048
 #define VERTEX_SIZE 8
@@ -33,6 +30,8 @@ public:
 	void draw(std::string filename, int x, int y, int w, int h);
 	void draw(int x, int y, int w, int h, int depth);
 
+	void drawString(std::wstring, int x, int y);
+
 	void endBatch();
 
 protected:
@@ -44,6 +43,8 @@ protected:
 	GLuint m_VBO;
 	GLuint m_IBO;
 	ShaderProgram m_shaderProgram;
+	FontManager m_fonts;
+	int arialID;
 
 	int m_screenWidth;
 	int m_screenHeight;
