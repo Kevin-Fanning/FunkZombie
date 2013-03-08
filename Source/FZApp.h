@@ -1,6 +1,6 @@
 #pragma once
-#include "Renderer2D.h"
-#include "ResourceManager.h"
+#include "Renderer2D/Renderer2D.h"
+#include "Resource Manager/ResourceManager.h"
 class FZApp
 {
 public:

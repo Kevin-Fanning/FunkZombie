@@ -25,6 +25,7 @@ public:
 	~Font(void);
 
 	void init(const FT_Library &library, const std::string &filename);
+	unsigned int strlength(const std::wstring &);
 
 	std::string m_name;
 	FT_Face m_face;

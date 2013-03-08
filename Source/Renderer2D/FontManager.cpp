@@ -20,6 +20,13 @@ void FontManager::init()
 
 int FontManager::addFont(std::string filename, int fontSize)
 {
+	for (int i = 0; i < m_fonts.size(); ++i)
+	{
+		if (m_fonts[i]->m_name == filename)
+		{
+			return i;
+		}
+	}
 	std::shared_ptr<Font> font(new Font(fontSize));
 	font->init(m_fontLibrary, filename);
 	m_fonts.push_back(font);
@@ -29,4 +36,16 @@ int FontManager::addFont(std::string filename, int fontSize)
 StrongFontptr FontManager::getFont(unsigned int index)
 {
 	return m_fonts[index];
+}
+
+unsigned int FontManager::getFontIndex(std::string fileName)
+{
+	for (int i = 0; i < m_fonts.size(); ++i)
+	{
+		if (m_fonts[i]->m_name == fileName)
+		{
+			return i;
+		}
+	}
+	return -1;
 }

@@ -7,20 +7,26 @@
     <ClCompile Include="Source\playground.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Renderer2D\Renderer2D.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Resource Manager\ResourceManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Resource Manager\Resource.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Renderer2D\ShaderProgram.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Source\stdafx.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Renderer2D\Renderer2D.cpp">
+      <Filter>Source\Renderer2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Renderer2D\Font.cpp">
+      <Filter>Source\Renderer2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Renderer2D\FontManager.cpp">
+      <Filter>Source\Renderer2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Resource Manager\Resource.cpp">
+      <Filter>Source\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Resource Manager\ResourceManager.cpp">
+      <Filter>Source\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Renderer2D\ShaderProgram.cpp">
+      <Filter>Source\Renderer2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -30,26 +36,32 @@
     <ClInclude Include="Source\stdafx.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer2D\Renderer2D.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Resource Manager\Resource.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Resource Manager\ResourceManager.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Renderer2D\ShaderProgram.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Renderer2D\SpriteInfo.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Renderer2D\Vertex.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Source\targetver.h">
       <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Renderer2D\Renderer2D.h">
+      <Filter>Headers\Renderer2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Renderer2D\SpriteInfo.h">
+      <Filter>Headers\Renderer2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Resource Manager\Resource.h">
+      <Filter>Headers\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Resource Manager\ResourceManager.h">
+      <Filter>Headers\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Renderer2D\Font.h">
+      <Filter>Headers\Renderer2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Renderer2D\FontManager.h">
+      <Filter>Headers\Renderer2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Renderer2D\ShaderProgram.h">
+      <Filter>Headers\Renderer2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Renderer2D\Vertex.h">
+      <Filter>Headers\Renderer2D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -61,9 +73,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="Headers">
       <UniqueIdentifier>{7a775834-26a1-4966-9bb5-a6e086fbfe94}</UniqueIdentifier>
     </Filter>
@@ -73,5 +82,23 @@
     <Filter Include="Assets">
       <UniqueIdentifier>{a566cbd5-d72a-44f3-8325-bdfff6f8ee64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headers\Renderer2D">
+      <UniqueIdentifier>{1d175f12-48b5-4e9a-a9b7-10632b73a3c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\ResourceManager">
+      <UniqueIdentifier>{d27dfd5b-f828-4405-bbc2-88fa441174b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Renderer2D">
+      <UniqueIdentifier>{6be2bb47-eecd-4b60-a322-161ad84a974c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ResourceManager">
+      <UniqueIdentifier>{64cdb4dd-abfd-4f1a-a86c-1d8aa94537f8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\FragmentShader.glsl">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Assets\VertexShader.glsl" />
   </ItemGroup>
 </Project>

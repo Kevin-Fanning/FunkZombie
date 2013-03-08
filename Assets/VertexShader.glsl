@@ -1,9 +1,9 @@
-#version 330
-in vec3 Position;
-in vec3 Color;
-in vec2 TexCoord;
-out vec2 TexCoord0;
-out vec3 Color0;
+#version 120
+attribute vec3 Position;
+attribute vec3 Color;
+attribute vec2 TexCoord;
+varying vec2 TexCoord0;
+varying vec3 Color0;
 uniform mat4 MVP;
 void main()
 {

@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "Renderer2D.h"
-#include "Resource.h"
+#include "Renderer2D/Renderer2D.h"
+#include "Resource Manager/Resource.h"
 
 Renderer2D::Renderer2D(void)
 {
@@ -20,7 +20,7 @@ void Renderer2D::Init(int screenWidth, int screenHeight)
 {
 	//TEMP CODE
 	m_fonts.init();
-	arialID = m_fonts.addFont("Assets/Arial.ttf", 25);
+	//arialID = m_fonts.addFont("Assets/Arial.ttf", 25);
 	//END TEMP CODE
 	m_screenWidth = screenWidth;
 	m_screenHeight = screenHeight;
@@ -101,22 +101,34 @@ void Renderer2D::draw(unsigned int texID,int x,int y,int w,int h, int sx,int sy,
 	m_spriteInfo.push_back(SpriteInfo(texID, x, y, w, h, w, h, sx, sy, sw, sh, r, g, b));
 }
 
-void Renderer2D::drawString(std::wstring str, int x, int y)
+
+int Renderer2D::addFont(const std::string& fontName, int fontSize)
 {
-	std::shared_ptr<Font> arial = m_fonts.getFont(arialID);
+	return m_fonts.addFont(fontName, fontSize);
+}
+
+int Renderer2D::stringSize(int fontIndex, const  std::wstring& text)
+{
+	StrongFontptr font = m_fonts.getFont(fontIndex);
+	return font->strlength(text);
+}
+
+void Renderer2D::drawString(int fontIndex,const std::wstring& str, int x, int y)
+{
+	StrongFontptr font = m_fonts.getFont(fontIndex);
 	int penX = x;
 	int penY = y;
 	for (int i = 0; i < str.length(); ++i)
 	{
 		unsigned int code = (unsigned int)str[i] - 32;
-		CharInfo info = arial->m_charInfo[code];
+		CharInfo info = font->m_charInfo[code];
 		if (str[i] == ' ')
 		{
 			penX += info.ax;
 		}
 		else
 		{
-			m_spriteInfo.push_back(SpriteInfo(arial->m_atlas, penX + info.bl, penY - info.bt, info.bw, info.bh, 1024, 1024, info.tx, info.ty, info.bw, info.bh, 1.f, 1.f, 1.f));
+			m_spriteInfo.push_back(SpriteInfo(font->m_atlas, penX + info.bl, penY - info.bt, info.bw, info.bh, 1024, 1024, info.tx, info.ty, info.bw, info.bh, 1.f, 1.f, 1.f));
 			penX += info.ax;
 		}
 	}
