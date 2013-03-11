@@ -7,20 +7,26 @@
     <ClCompile Include="Source\playground.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Renderer2D\Renderer2D.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Resource Manager\ResourceManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Resource Manager\Resource.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Renderer2D\ShaderProgram.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Source\stdafx.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Renderer2D\Renderer2D.cpp">
+      <Filter>Source\Renderer2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Renderer2D\ShaderProgram.cpp">
+      <Filter>Source\Renderer2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Resource Manager\Resource.cpp">
+      <Filter>Source\Resource Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Resource Manager\ResourceManager.cpp">
+      <Filter>Source\Resource Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Renderer2D\FontManager.cpp">
+      <Filter>Source\Renderer2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Renderer2D\Font.cpp">
+      <Filter>Source\Renderer2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -30,26 +36,32 @@
     <ClInclude Include="Source\stdafx.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer2D\Renderer2D.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Resource Manager\Resource.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Resource Manager\ResourceManager.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Renderer2D\ShaderProgram.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Renderer2D\SpriteInfo.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Renderer2D\Vertex.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Source\targetver.h">
       <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Renderer2D\Renderer2D.h">
+      <Filter>Headers\Renderer2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Renderer2D\ShaderProgram.h">
+      <Filter>Headers\Renderer2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Renderer2D\Vertex.h">
+      <Filter>Headers\Renderer2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Renderer2D\SpriteInfo.h">
+      <Filter>Headers\Renderer2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Resource Manager\Resource.h">
+      <Filter>Headers\Resource Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Resource Manager\ResourceManager.h">
+      <Filter>Headers\Resource Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Renderer2D\FontManager.h">
+      <Filter>Headers\Renderer2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Renderer2D\Font.h">
+      <Filter>Headers\Renderer2D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -73,5 +85,30 @@
     <Filter Include="Assets">
       <UniqueIdentifier>{a566cbd5-d72a-44f3-8325-bdfff6f8ee64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headers\Renderer2D">
+      <UniqueIdentifier>{2c8e1de9-0b42-4c99-ba58-547a55977a0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Resource Manager">
+      <UniqueIdentifier>{3c84e8da-487e-4b38-ae74-64b255ef7e59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Renderer2D">
+      <UniqueIdentifier>{60250270-c791-4075-850f-4c6126523aaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Resource Manager">
+      <UniqueIdentifier>{177288e4-81cb-42ba-a1c5-4f2e27e3f335}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Assets\Arial.ttf">
+      <Filter>Assets</Filter>
+    </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\FragmentShader.glsl">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Assets\VertexShader.glsl">
+      <Filter>Assets</Filter>
+    </None>
   </ItemGroup>
 </Project>

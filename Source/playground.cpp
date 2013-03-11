@@ -52,9 +52,10 @@ int main(int argc, char* argv[])
 		}
 		g_pApp->m_renderer->clear(0.4f, 0.3f, 0.8f);
 		g_pApp->m_renderer->beginBatch();
-		g_pApp->m_renderer->draw(tex1, x, 10, 128, 128);
+		//g_pApp->m_renderer->draw(tex1, x, 10, 128, 128);
 		//g_pApp->m_renderer->draw(tex2, 200, 200, 50, 40);
-		g_pApp->m_renderer->drawString(L"AVAVAVAV THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG!", 200, 400);
+		g_pApp->m_renderer->drawString(L"Auf Deutsch ist die Vereinbarung »umgekehrte zweifache Anführungszeichen für die Zitate zu benutzen, sogar ›einfache Anführungszeichen", 20, 400);
+		g_pApp->m_renderer->drawString(L"; diese Anführungszeichen „dürfen auch solche ‚englische‘ Anführungszeichen sein.“", 20, 300);
 		g_pApp->m_renderer->endBatch();
 
 		glfwSwapBuffers();

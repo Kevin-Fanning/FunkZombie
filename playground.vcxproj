@@ -60,7 +60,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\OpenGL libraries\libs\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;GLFW.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;GLFW.lib;SOIL.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -83,6 +83,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Renderer2D\Font.h" />
+    <ClInclude Include="Source\Renderer2D\FontManager.h" />
     <ClInclude Include="Source\FZApp.h" />
     <ClInclude Include="Source\Renderer2D\Renderer2D.h" />
     <ClInclude Include="Source\Renderer2D\ShaderProgram.h" />
@@ -94,6 +96,8 @@
     <ClInclude Include="Source\targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Renderer2D\Font.cpp" />
+    <ClCompile Include="Source\Renderer2D\FontManager.cpp" />
     <ClCompile Include="Source\FZApp.cpp" />
     <ClCompile Include="Source\playground.cpp" />
     <ClCompile Include="Source\Renderer2D\Renderer2D.cpp" />
@@ -108,6 +112,13 @@
   <ItemGroup>
     <Image Include="Assets\thing.png" />
     <Image Include="Assets\thing2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Assets\Arial.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\FragmentShader.glsl" />
+    <None Include="Assets\VertexShader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

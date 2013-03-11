@@ -20,7 +20,7 @@ void Renderer2D::Init(int screenWidth, int screenHeight)
 {
 	//TEMP CODE
 	m_fonts.init();
-	arialID = m_fonts.addFont("Assets/Arial.ttf", 25);
+	arialID = m_fonts.addFont("Assets/Arial.ttf", 20);
 	//END TEMP CODE
 	m_screenWidth = screenWidth;
 	m_screenHeight = screenHeight;
@@ -109,17 +109,20 @@ void Renderer2D::drawString(std::wstring str, int x, int y)
 	for (int i = 0; i < str.length(); ++i)
 	{
 		unsigned int code = (unsigned int)str[i] - 32;
-		CharInfo info = arial->m_charInfo[code];
-		if (str[i] == ' ')
-		{
-			penX += info.ax;
-		}
-		else
-		{
-			m_spriteInfo.push_back(SpriteInfo(arial->m_atlas, penX + info.bl, penY - info.bt, info.bw, info.bh, 1024, 1024, info.tx, info.ty, info.bw, info.bh, 1.f, 1.f, 1.f));
-			penX += info.ax;
+		if (code < arial->m_face->num_glyphs){
+			CharInfo info = arial->m_charInfo[code];
+			if (str[i] == ' ')
+			{
+				penX += info.ax;
+			}
+			else
+			{
+				m_spriteInfo.push_back(SpriteInfo(arial->m_atlas, penX + info.bl, penY - info.bt, info.bw, info.bh, 1024, 1024, info.tx, info.ty, info.bw, info.bh, 1.f, 1.f, 1.f));
+				penX += info.ax;
+			}
 		}
 	}
+	//m_spriteInfo.push_back(SpriteInfo(arial->m_atlas, 0, 0, 1024, 1024, 1024, 1024, 0, 0, 1024, 1024, 1.f, 1.f, 1.f));
 }
 
 void Renderer2D::endBatch()
