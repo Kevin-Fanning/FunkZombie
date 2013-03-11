@@ -14,8 +14,11 @@ Font::~Font(void)
 
 void Font::init(const FT_Library &library, const std::string &filename)
 {
+	m_name = filename;
+
 	m_charInfo.reserve(128);
-	FT_New_Face(library, filename.c_str(), 0, &m_face);
+	if (FT_New_Face(library, filename.c_str(), 0, &m_face))
+		{ return; }
 	FT_Set_Pixel_Sizes(m_face, 0, m_fontSize);
 
 	int atlasWidth = 0; int rowHeight = 0;
@@ -55,8 +58,8 @@ void Font::init(const FT_Library &library, const std::string &filename)
 				x = 0;
 			}
 			glTexSubImage2D(GL_TEXTURE_2D, 0, x, curRow*rowHeight, m_face->glyph->bitmap.width, m_face->glyph->bitmap.rows, GL_ALPHA, GL_UNSIGNED_BYTE, m_face->glyph->bitmap.buffer);
-			m_charInfo[i-32].tx = x;
-			m_charInfo[i-32].ty = curRow*rowHeight;
+			m_charInfo[i-32].tx = (float)x;
+			m_charInfo[i-32].ty = (float)curRow*rowHeight;
 			x += m_face->glyph->bitmap.width + 1;
 		}
 	}
@@ -64,4 +67,15 @@ void Font::init(const FT_Library &library, const std::string &filename)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+}
+
+unsigned int Font::strlength(const std::wstring &in)
+{
+	float len = 0;
+	for (unsigned int i = 0; i < in.length(); ++i)
+	{
+		wchar_t wchar = in[i];
+		len += m_charInfo[(int)wchar - 32].ax;
+	}
+	return (unsigned int)len;
 }

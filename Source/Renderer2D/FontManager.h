@@ -14,7 +14,7 @@ public:
 
 	int addFont(std::string filename, int fontSize);
 
-	void getFontIndex(std::string name);
+	unsigned int getFontIndex(std::string name);
 	StrongFontptr getFont(unsigned int index);
 
 protected:

@@ -1,0 +1,21 @@
+﻿Build started 3/8/2013 5:43:05 PM.
+     1>Project "C:\Users\Kevin\Documents\GitHub\FunkZombie\playground.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IC:\Users\Kevin\Documents\GitHub\FunkZombie\Dependencies\Include\ /IC:\Users\Kevin\Documents\GitHub\FunkZombie\Source\ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"C:\Users\Kevin\Documents\GitHub\FunkZombie\Temp\Debug\playground.pch" /Fo"C:\Users\Kevin\Documents\GitHub\FunkZombie\Temp\Debug\\" /Fd"C:\Users\Kevin\Documents\GitHub\FunkZombie\Temp\Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Source\playground.cpp
+         playground.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Kevin\Documents\GitHub\FunkZombie\Engine\Debug\playground.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\Users\Kevin\Documents\GitHub\FunkZombie\Dependencies\lib\ opengl32.lib glew32.lib GLFW.lib SOIL.lib freetype.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Kevin\Documents\GitHub\FunkZombie\Engine\Debug\playground.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Kevin\Documents\GitHub\FunkZombie\Engine\Debug\playground.lib" /MACHINE:X86 C:\Users\Kevin\Documents\GitHub\FunkZombie\Temp\Debug\FZApp.obj
+         C:\Users\Kevin\Documents\GitHub\FunkZombie\Temp\Debug\playground.obj
+         C:\Users\Kevin\Documents\GitHub\FunkZombie\Temp\Debug\Font.obj
+         C:\Users\Kevin\Documents\GitHub\FunkZombie\Temp\Debug\FontManager.obj
+         C:\Users\Kevin\Documents\GitHub\FunkZombie\Temp\Debug\Renderer2D.obj
+         C:\Users\Kevin\Documents\GitHub\FunkZombie\Temp\Debug\ShaderProgram.obj
+         C:\Users\Kevin\Documents\GitHub\FunkZombie\Temp\Debug\Resource.obj
+         C:\Users\Kevin\Documents\GitHub\FunkZombie\Temp\Debug\ResourceManager.obj
+         C:\Users\Kevin\Documents\GitHub\FunkZombie\Temp\Debug\stdafx.obj
+         playground.vcxproj -> C:\Users\Kevin\Documents\GitHub\FunkZombie\Engine\Debug\playground.exe
+     1>Done Building Project "C:\Users\Kevin\Documents\GitHub\FunkZombie\playground.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.67

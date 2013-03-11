@@ -30,7 +30,9 @@ public:
 	void draw(std::string filename, int x, int y, int w, int h);
 	void draw(int x, int y, int w, int h, int depth);
 
-	void drawString(std::wstring, int x, int y);
+	int addFont(const std::string& fontName, int fontSize);
+	int stringSize(int fontIndex,const std::wstring& text);
+	void drawString(int fontIndex,const std::wstring& text, int x, int y);
 
 	void endBatch();
 

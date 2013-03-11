@@ -22,11 +22,11 @@
     <ClCompile Include="Source\Resource Manager\ResourceManager.cpp">
       <Filter>Source\Resource Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Renderer2D\FontManager.cpp">
-      <Filter>Source\Renderer2D</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Renderer2D\Font.cpp">
       <Filter>Source\Renderer2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Renderer2D\FontManager.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -71,9 +71,6 @@
     <Image Include="Assets\thing2.png">
       <Filter>Assets</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">

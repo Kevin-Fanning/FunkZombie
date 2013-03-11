@@ -41,7 +41,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)\Engine\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)Engine\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
@@ -54,12 +54,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Kevin\Documents\Visual Studio 2012\Projects\playground\Source;C:\Users\Kevin\Documents\Visual Studio 2012\Projects\playground\Source\Resource Manager;C:\Users\Kevin\Documents\Visual Studio 2012\Projects\playground\Source\Renderer2D;C:\OpenGL libraries\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Include\; $(SolutionDir)Source\</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\OpenGL libraries\libs\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32.lib;GLFW.lib;SOIL.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -80,12 +81,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClInclude Include="Source\FZApp.h" />
     <ClInclude Include="Source\Renderer2D\Font.h" />
     <ClInclude Include="Source\Renderer2D\FontManager.h" />
-    <ClInclude Include="Source\FZApp.h" />
     <ClInclude Include="Source\Renderer2D\Renderer2D.h" />
     <ClInclude Include="Source\Renderer2D\ShaderProgram.h" />
     <ClInclude Include="Source\Renderer2D\SpriteInfo.h" />
@@ -100,6 +98,8 @@
     <ClCompile Include="Source\Renderer2D\FontManager.cpp" />
     <ClCompile Include="Source\FZApp.cpp" />
     <ClCompile Include="Source\playground.cpp" />
+    <ClCompile Include="Source\Renderer2D\Font.cpp" />
+    <ClCompile Include="Source\Renderer2D\FontManager.cpp" />
     <ClCompile Include="Source\Renderer2D\Renderer2D.cpp" />
     <ClCompile Include="Source\Renderer2D\ShaderProgram.cpp" />
     <ClCompile Include="Source\Resource Manager\Resource.cpp" />
@@ -114,9 +114,11 @@
     <Image Include="Assets\thing2.png" />
   </ItemGroup>
   <ItemGroup>
+
     <Font Include="Assets\Arial.ttf" />
   </ItemGroup>
   <ItemGroup>
+
     <None Include="Assets\FragmentShader.glsl" />
     <None Include="Assets\VertexShader.glsl" />
   </ItemGroup>

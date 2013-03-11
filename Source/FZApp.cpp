@@ -22,8 +22,8 @@ bool FZApp::InitInstance(int screenWidth, int screenHeight)
 		return false;
 	}
 	glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
-	glfwOpenWindowHint(GLFW_VERSION_MAJOR, 3);
-	glfwOpenWindowHint(GLFW_VERSION_MINOR, 2);
+	glfwOpenWindowHint(GLFW_VERSION_MAJOR, 2);
+	glfwOpenWindowHint(GLFW_VERSION_MINOR, 1);
 	glfwOpenWindow(screenWidth, screenHeight, 8, 8, 8, 8, 24, 0, GLFW_WINDOW);
 	glfwSetWindowTitle("Playground");
 
