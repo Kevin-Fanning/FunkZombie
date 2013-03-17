@@ -6,5 +6,5 @@ varying vec3 Color0;
 
 void main()
 {
-	gl_FragColor = texture2D(gSampler, TexCoord0.st) * vec4(Color0, 1.0);
+	gl_FragColor = vec4(Color0, texture2D(gSampler, TexCoord0.st).w);
 }

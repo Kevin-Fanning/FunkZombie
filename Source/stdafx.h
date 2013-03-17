@@ -25,4 +25,5 @@
 #include <memory>
 #include <iostream>
 
+#include "Renderer2D/Color.h"
 #include "FZApp.h"

@@ -4,6 +4,7 @@
 #include "SpriteInfo.h"
 #include "Vertex.h"
 #include "FontManager.h"
+#include "Texture2D.h"
 
 #define MAX_SPRITES 2048
 #define VERTEX_SIZE 8
@@ -17,22 +18,18 @@ public:
 
 	void Init(int screenWidth, int screenHeight);
 
-	void setColor(glm::vec4 color);
-	void setColor(float r, float g, float b);
-
 	void beginBatch();
 
 	void clear(float r, float g, float b);
 
-	void draw(unsigned int texID, int x, int y, int w, int h, int sx, int sy, int sw, int sh, float r, float g, float b);
-	void draw(std::string filename, int x, int y, int w, int h, int sx, int sy, int sw, int sh, float r, float g, float b);
-	void draw(unsigned int texID, int x, int y, int w, int h);
-	void draw(std::string filename, int x, int y, int w, int h);
+	void draw(Texture2D tex, int x, int y, int w, int h, Color color);
+	void draw(Texture2D tex, int x, int y, int w, int h, int sx, int sy, int sw, int sh, Color color);
+
 	void draw(int x, int y, int w, int h, int depth);
 
 	int addFont(const std::string& fontName, int fontSize);
 	int stringSize(int fontIndex,const std::wstring& text);
-	void drawString(int fontIndex,const std::wstring& text, int x, int y);
+	void drawString(int fontIndex,const std::wstring& text, int x, int y, Color color);
 
 	void endBatch();
 
@@ -45,8 +42,9 @@ protected:
 	GLuint m_VBO;
 	GLuint m_IBO;
 	ShaderProgram m_shaderProgram;
+	ShaderProgram m_stringShaderProgram;
 	FontManager m_fonts;
-	int arialID;
+	bool isText;
 
 	int m_screenWidth;
 	int m_screenHeight;

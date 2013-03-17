@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Renderer2D/Renderer2D.h"
 #include "Resource Manager/Resource.h"
+#include "Renderer2D/Texture2D.h"
 
 Renderer2D::Renderer2D(void)
 {
@@ -36,6 +37,13 @@ void Renderer2D::Init(int screenWidth, int screenHeight)
 	m_shaderProgram.finalize();
 	m_shaderProgram.useProgram();
 
+	m_stringShaderProgram.createProgram();
+	m_stringShaderProgram.loadShader(GL_VERTEX_SHADER, "Assets/VertexShader.glsl");
+	m_stringShaderProgram.loadShader(GL_FRAGMENT_SHADER, "Assets/StringFragmentShader.glsl");
+	m_stringShaderProgram.finalize();
+
+	isText = false;
+
 	//Tell the shader we are using TEXTURE0
 	glUniform1i(m_shaderProgram.getSamplerLocation(), 0);
 
@@ -63,22 +71,21 @@ void Renderer2D::Init(int screenWidth, int screenHeight)
 	}
 }
 
-void Renderer2D::setColor(glm::vec4 color)
-{
-	glUniform4f(m_shaderProgram.getColLocation(), color.r, color.g, color.b, color.a);
-}
-void Renderer2D::setColor(float r, float g, float b)
-{
-	glUniform4f(m_shaderProgram.getColLocation(), r, g, b, 1.0f);
-}
-
-
+/**
+* Clears the color and depth buffer
+* @param r  The red component of the clear  from 0.0 to 1.0
+* @param g  The green component of the clear from 0.0 to 1.0
+* @param b  The blue componenet of the clear from 0.0 to 1.0
+*/
 void Renderer2D::clear(float r, float g, float b)
 {
 	glClearColor(r, g, b, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+/**
+* Begin the sprite batch
+*/
 void Renderer2D::beginBatch()
 {
 	if (m_batchBegun)
@@ -88,52 +95,93 @@ void Renderer2D::beginBatch()
 	}
 
 }
-void Renderer2D::draw(unsigned int texID,int x,int y,int w,int h)
+
+/**
+* Draw a texture at a screen position, with a size
+* @param tex a Texture2D object. Must have already been loaded
+* @param x The x position in pixel coordinates. 0 is the left
+* @param y The y position in pixel coordinates. 0 is the top
+* @param w The width of the render on-screen in pixels
+* @param h The height of the render on-screen in pixels
+* @param color The color tint to draw the texture. Use Color::White for no tint
+*/
+void Renderer2D::draw(Texture2D tex, int x, int y, int w, int h, Color color)
 {
-	m_spriteInfo.push_back(SpriteInfo(texID, x, y, w, h, w, h, 0, 0, w, h, 1.f, 1.f, 1.f));
+	m_spriteInfo.push_back(SpriteInfo(tex.m_ID, x, y, w, h, w, h, 0, 0, w, h, color.r, color.g, color.b, false));
 }
 
-void Renderer2D::draw(unsigned int texID,int x,int y,int w,int h, int sx,int sy,int sw,int sh,float r,float g,float b)
+/**
+* Draw a sub-image of a texture at a screen position, with a size
+* @param tex a Texture2D object. Must have already been loaded
+* @param x The x position in pixel coordinates. 0 is the left
+* @param y The y position in pixel coordinates. 0 is the top
+* @param w The width of the render on-screen in pixels
+* @param h The height of the render on-screen in pixels
+* @param sx The position of the sub-image in the original texture
+* @param sy The y position of the sub-image in the original texture
+* @param sw The width of the sub-image
+* @param color The color tint to draw the texture. Use Color::White for no tint
+*/
+void Renderer2D::draw(Texture2D tex, int x, int y, int w, int h, int sx, int sy, int sw, int sh, Color color)
 {
-	m_spriteInfo.push_back(SpriteInfo(texID, x, y, w, h, w, h, sx, sy, sw, sh, r, g, b));
+	m_spriteInfo.push_back(SpriteInfo(tex.m_ID, x, y, w, h, tex.width, tex.height, sx, sy, sw, sh, color.r, color.g, color.b, false));
 }
 
-
+/**
+* Adds a font to the renderer's font collection
+* @param fontName  a string representing the location/name of the font to load
+* @param fontSize  the size of the font in pixels
+* @returns An index referring to the font to be used later
+*/
 int Renderer2D::addFont(const std::string& fontName, int fontSize)
 {
 	return m_fonts.addFont(fontName, fontSize);
 }
 
+/**
+* Utility function to get the pixel width of a string
+* @param fontIndex integer referring to an already loaded font
+* @param text  the string to be measured
+*/
 int Renderer2D::stringSize(int fontIndex, const  std::wstring& text)
 {
 	StrongFontptr font = m_fonts.getFont(fontIndex);
 	return font->strlength(text);
 }
 
-void Renderer2D::drawString(int fontIndex,const std::wstring& str, int x, int y)
+/**
+*  Draws a unicode string to the window
+* @param fontIndex  integer referring to an already loaded font
+* @param str  The unicode string to draw
+* @param x    The x position of the text in screen coordinates
+* @param y    The y position of the text in screen coordinates
+*/
+void Renderer2D::drawString(int fontIndex,const std::wstring& str, int x, int y, Color color)
 {
 	StrongFontptr font = m_fonts.getFont(fontIndex);
 	int penX = x;
 	int penY = y;
-	for (int i = 0; i < str.length(); ++i)
+	for (unsigned int i = 0; i < str.length(); ++i)
 	{
-		unsigned int code = (unsigned int)str[i] - 32;
+		int code = (unsigned int)str[i] - 32;
 		if (code < font->m_face->num_glyphs){
 			CharInfo info = font->m_charInfo[code];
 			if (str[i] == ' ')
 			{
-				penX += info.ax;
+				penX += (int)info.ax;
 			}
 			else
 			{
-				m_spriteInfo.push_back(SpriteInfo(font->m_atlas, penX + info.bl, penY - info.bt, info.bw, info.bh, 1024, 1024, info.tx, info.ty, info.bw, info.bh, 1.f, 1.f, 1.f));
-				penX += info.ax;
+				m_spriteInfo.push_back(SpriteInfo(font->m_atlas, penX + info.bl, penY - info.bt, info.bw, info.bh, 1024, 1024, info.tx, info.ty, info.bw, info.bh, color.r, color.g, color.b, true));
+				penX += (int)info.ax;
 			}
 		}
 	}
-	//m_spriteInfo.push_back(SpriteInfo(arial->m_atlas, 0, 0, 1024, 1024, 1024, 1024, 0, 0, 1024, 1024, 1.f, 1.f, 1.f));
 }
 
+/**
+* Ends the spritebatch and draws all sprites to the screen
+*/
 void Renderer2D::endBatch()
 {
 	//sort by texture
@@ -149,6 +197,11 @@ void Renderer2D::endBatch()
 		if (m_spriteInfo[i].texID != curTex)
 		{
 			//Render what we got
+
+			//Tell the renderer to use the text shader if necessary
+			if (i > 0)
+				isText = m_spriteInfo[i-1].isText;
+
 			renderBatch();
 			m_numQueSprites = 0;
 			curTex = m_spriteInfo[i].texID;
@@ -159,11 +212,16 @@ void Renderer2D::endBatch()
 		m_numQueSprites++;
 	}
 	//Render the remaining sprites
+	isText = m_spriteInfo[m_spriteInfo.size()-1].isText;
 	renderBatch();
 	m_numQueSprites = 0;
 	m_spriteInfo.clear();
 }
 
+/**
+* Takes a sprite and creates 4 vertices to send to the renderer
+* @param si  The sprite to convert into verts and send
+*/
 void Renderer2D::addSpriteVertices(SpriteInfo si)
 {
 	float posX = 2.0f * si.x / m_screenWidth - 1.0f;
@@ -212,6 +270,10 @@ void Renderer2D::addSpriteVertices(SpriteInfo si)
 	m_vertices.push_back(BotRight);
 }
 
+/**
+* Switches the texture that OpenGL is using
+* @param texID  handle referring to an openGL texture
+*/
 void Renderer2D::useTexture(GLuint texID)
 {
 	glActiveTexture(GL_TEXTURE0);
@@ -220,11 +282,23 @@ void Renderer2D::useTexture(GLuint texID)
 	glUniform1i(m_shaderProgram.getSamplerLocation(), 0);
 }
 
+/**
+* Renders a batch of sprites that share a texture
+*
+*/
 void Renderer2D::renderBatch()
 {
 	//Give the data to the gpu and render. Obviously this is a waste if there is nothing to draw
 	if (m_vertices.size() > 0)
 	{
+		if (isText) 
+		{
+			m_stringShaderProgram.useProgram();
+		}
+		else 
+		{ 
+			m_shaderProgram.useProgram(); 
+		}
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float)*VERTEX_SIZE*m_vertices.size(), &m_vertices[0], GL_DYNAMIC_DRAW);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int)*6*m_numQueSprites, &m_indices[0], GL_DYNAMIC_DRAW);
 		m_shaderProgram.enableVertexAttribArray();

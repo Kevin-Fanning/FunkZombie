@@ -44,7 +44,7 @@ void Font::init(const FT_Library &library, const std::string &filename)
 	
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, FONT_TEX_SIZE, FONT_TEX_SIZE, 0, GL_ALPHA, GL_UNSIGNED_BYTE,0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, FONT_TEX_SIZE, FONT_TEX_SIZE, 0, GL_ALPHA, GL_UNSIGNED_BYTE,0);
 	
 	int x = 0; int curRow = 0;
 	for (int i = 32; i < m_face->num_glyphs; ++i)

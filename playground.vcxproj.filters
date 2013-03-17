@@ -28,6 +28,9 @@
     <ClCompile Include="Source\Renderer2D\FontManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Renderer2D\Texture2D.cpp">
+      <Filter>Source\Renderer2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\FZApp.h">
@@ -61,6 +64,12 @@
       <Filter>Headers\Renderer2D</Filter>
     </ClInclude>
     <ClInclude Include="Source\Renderer2D\Font.h">
+      <Filter>Headers\Renderer2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Renderer2D\Texture2D.h">
+      <Filter>Headers\Renderer2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Renderer2D\Color.h">
       <Filter>Headers\Renderer2D</Filter>
     </ClInclude>
   </ItemGroup>
@@ -99,12 +108,18 @@
     <Font Include="Assets\Arial.ttf">
       <Filter>Assets</Filter>
     </Font>
+    <Font Include="Assets\impact.ttf">
+      <Filter>Assets</Filter>
+    </Font>
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\FragmentShader.glsl">
       <Filter>Assets</Filter>
     </None>
     <None Include="Assets\VertexShader.glsl">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Assets\StringFragmentShader.glsl">
       <Filter>Assets</Filter>
     </None>
   </ItemGroup>

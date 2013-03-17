@@ -75,15 +75,15 @@ void ShaderProgram::finalize()
 	m_posLocation = glGetAttribLocation(m_programID, "Position");
 	m_uvLocation = glGetAttribLocation(m_programID, "TexCoord");
 	m_colLocation = glGetAttribLocation(m_programID, "Color");
-	//assert(m_colLocation != 0xFFFFFFFF);
-	//assert(m_posLocation != 0xFFFFFFFF);
-	//assert(m_uvLocation != 0xFFFFFFFF);
+	assert(m_colLocation != 0xFFFFFFFF);
+	assert(m_posLocation != 0xFFFFFFFF);
+	assert(m_uvLocation != 0xFFFFFFFF);
 	glVertexAttribPointer(m_posLocation, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), 0);
 	glVertexAttribPointer(m_colLocation, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (GLvoid*)(3*sizeof(float)));
 	glVertexAttribPointer(m_uvLocation, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (GLvoid*)(6*sizeof(float)));
 
 	m_samplerLocation = glGetUniformLocation(m_programID, "gSampler");
-	//assert(m_samplerLocation != 0xFFFFFFFF);
+	assert(m_samplerLocation != 0xFFFFFFFF);
 }
 
 void ShaderProgram::useProgram()

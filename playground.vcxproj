@@ -56,6 +56,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Include\; $(SolutionDir)Source\</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -82,11 +83,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\FZApp.h" />
+    <ClInclude Include="Source\Renderer2D\Color.h" />
     <ClInclude Include="Source\Renderer2D\Font.h" />
     <ClInclude Include="Source\Renderer2D\FontManager.h" />
     <ClInclude Include="Source\Renderer2D\Renderer2D.h" />
     <ClInclude Include="Source\Renderer2D\ShaderProgram.h" />
     <ClInclude Include="Source\Renderer2D\SpriteInfo.h" />
+    <ClInclude Include="Source\Renderer2D\Texture2D.h" />
     <ClInclude Include="Source\Renderer2D\Vertex.h" />
     <ClInclude Include="Source\Resource Manager\Resource.h" />
     <ClInclude Include="Source\Resource Manager\ResourceManager.h" />
@@ -98,10 +101,9 @@
     <ClCompile Include="Source\Renderer2D\FontManager.cpp" />
     <ClCompile Include="Source\FZApp.cpp" />
     <ClCompile Include="Source\playground.cpp" />
-    <ClCompile Include="Source\Renderer2D\Font.cpp" />
-    <ClCompile Include="Source\Renderer2D\FontManager.cpp" />
     <ClCompile Include="Source\Renderer2D\Renderer2D.cpp" />
     <ClCompile Include="Source\Renderer2D\ShaderProgram.cpp" />
+    <ClCompile Include="Source\Renderer2D\Texture2D.cpp" />
     <ClCompile Include="Source\Resource Manager\Resource.cpp" />
     <ClCompile Include="Source\Resource Manager\ResourceManager.cpp" />
     <ClCompile Include="Source\stdafx.cpp">
@@ -114,12 +116,12 @@
     <Image Include="Assets\thing2.png" />
   </ItemGroup>
   <ItemGroup>
-
     <Font Include="Assets\Arial.ttf" />
+    <Font Include="Assets\impact.ttf" />
   </ItemGroup>
   <ItemGroup>
-
     <None Include="Assets\FragmentShader.glsl" />
+    <None Include="Assets\StringFragmentShader.glsl" />
     <None Include="Assets\VertexShader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
