@@ -1,7 +1,13 @@
+/*
+ * FZombie Game Engine
+ * Renderer component implementation
+ * Kevin Fanning
+ * 2013
+*/
 #include "stdafx.h"
-#include "Renderer2D/Renderer2D.h"
-#include "Resource Manager/Resource.h"
-#include "Renderer2D/Texture2D.h"
+#include "Renderer2D.h"
+#include "../ResourceManager/Resource.h"
+#include "Texture2D.h"
 
 Renderer2D::Renderer2D(void)
 {
@@ -56,6 +62,7 @@ void Renderer2D::Init(int screenWidth, int screenHeight)
 
 	m_vertices.reserve(MAX_SPRITES * VERTICES_PER_SPRITE);
 	m_spriteInfo.reserve(MAX_SPRITES);
+	m_transparentSpriteInfo.reserve(MAX_SPRITES/2);
 
 	//The indices never change, even if we don't use all of them.
 	//It makes sense to just load them all now and save the work later
@@ -105,9 +112,10 @@ void Renderer2D::beginBatch()
 * @param h The height of the render on-screen in pixels
 * @param color The color tint to draw the texture. Use Color::White for no tint
 */
-void Renderer2D::draw(Texture2D tex, int x, int y, int w, int h, Color color)
+void Renderer2D::draw(Texture2D tex, int x, int y, int w, int h, Color color, float depth, float rotation)
 {
-	m_spriteInfo.push_back(SpriteInfo(tex.m_ID, x, y, w, h, w, h, 0, 0, w, h, color.r, color.g, color.b, false));
+	SpriteInfo si(SpriteInfo(tex.m_ID, x, y, w, h, tex.width, tex.width, 0, 0, tex.width, tex.height, rotation, depth, color.r, color.g, color.b, false));
+	tex.isTransparent ? m_transparentSpriteInfo.push_back(si) : m_spriteInfo.push_back(si);
 }
 
 /**
@@ -122,11 +130,19 @@ void Renderer2D::draw(Texture2D tex, int x, int y, int w, int h, Color color)
 * @param sw The width of the sub-image
 * @param color The color tint to draw the texture. Use Color::White for no tint
 */
-void Renderer2D::draw(Texture2D tex, int x, int y, int w, int h, int sx, int sy, int sw, int sh, Color color)
+void Renderer2D::draw(Texture2D tex, int x, int y, int w, int h, int sx, int sy, int sw, int sh, Color color, float depth, float rotation)
 {
-	m_spriteInfo.push_back(SpriteInfo(tex.m_ID, x, y, w, h, tex.width, tex.height, sx, sy, sw, sh, color.r, color.g, color.b, false));
+	SpriteInfo si(tex.m_ID, x, y, w, h, tex.width, tex.height, sx, sy, sw, sh, rotation, depth, color.r, color.g, color.b, false);
+	tex.isTransparent ? m_transparentSpriteInfo.push_back(si) : m_spriteInfo.push_back(si);
 }
 
+//Overload allows you to add a different rotation center
+void Renderer2D::draw(Texture2D tex, int x, int y, int w, int h, int sx, int sy, int sw, int sh, Color color, float depth, float rotation, int rotCenterX, int rotCenterY)
+{
+	SpriteInfo si(tex.m_ID, x, y, w, h, tex.width, tex.height, sx, sy, sw, sh, rotation, depth, color.r, color.g, color.b, false);
+	si.rotCenterX = rotCenterX; si.rotCenterY = rotCenterY;
+	tex.isTransparent ? m_transparentSpriteInfo.push_back(si) : m_spriteInfo.push_back(si);
+}
 /**
 * Adds a font to the renderer's font collection
 * @param fontName  a string representing the location/name of the font to load
@@ -172,7 +188,7 @@ void Renderer2D::drawString(int fontIndex,const std::wstring& str, int x, int y,
 			}
 			else
 			{
-				m_spriteInfo.push_back(SpriteInfo(font->m_atlas, penX + info.bl, penY - info.bt, info.bw, info.bh, 1024, 1024, info.tx, info.ty, info.bw, info.bh, color.r, color.g, color.b, true));
+				m_transparentSpriteInfo.push_back(SpriteInfo(font->m_atlas, penX + info.bl + info.bw/2, penY - info.bt + info.bh/2, (int)info.bw, (int)info.bh, 1024, 1024, (int)info.tx, (int)info.ty, (int)info.bw, (int)info.bh, 0.f, 0.f, color.r, color.g, color.b, true));
 				penX += (int)info.ax;
 			}
 		}
@@ -184,38 +200,51 @@ void Renderer2D::drawString(int fontIndex,const std::wstring& str, int x, int y,
 */
 void Renderer2D::endBatch()
 {
-	//sort by texture
+	//sort by texture, then by z order
 	std::sort(m_spriteInfo.begin(), m_spriteInfo.begin() + m_spriteInfo.size(), [](SpriteInfo const x, SpriteInfo const y) -> bool
             {
+				if (x.texID == y.texID) { return x.depth < y.depth;}
 				return x.texID < y.texID;
             });
 
-	//Go through the spriteInfo array, and if the texture changes, render what we have so far
+	//sort transparents by z order, then by texture
+	std::sort(m_transparentSpriteInfo.begin(), m_transparentSpriteInfo.begin() + m_transparentSpriteInfo.size(), [](SpriteInfo const x, SpriteInfo const y) -> bool
+			{
+				if (x.depth == y.depth) { return x.texID < y.texID; }
+				return x.depth < y.depth;
+			});
+
+	flushSprites(m_spriteInfo);
+	flushSprites(m_transparentSpriteInfo);
+}
+
+void Renderer2D::flushSprites(std::vector<SpriteInfo> & sprites)
+{
 	GLuint curTex = 0;
-	for (unsigned int i = 0; i < m_spriteInfo.size(); ++i)
+	for (unsigned int i = 0; i < sprites.size(); ++i)
 	{
-		if (m_spriteInfo[i].texID != curTex)
+		if (sprites[i].texID != curTex)
 		{
 			//Render what we got
 
 			//Tell the renderer to use the text shader if necessary
 			if (i > 0)
-				isText = m_spriteInfo[i-1].isText;
+				isText = sprites[i-1].isText;
 
 			renderBatch();
 			m_numQueSprites = 0;
-			curTex = m_spriteInfo[i].texID;
+			curTex = sprites[i].texID;
 			useTexture(curTex);
 		}
 		//add this to the buffer
-		addSpriteVertices(m_spriteInfo[i]);
+		addSpriteVertices(sprites[i]);
 		m_numQueSprites++;
 	}
 	//Render the remaining sprites
-	isText = m_spriteInfo[m_spriteInfo.size()-1].isText;
+	isText = sprites[sprites.size()-1].isText;
 	renderBatch();
 	m_numQueSprites = 0;
-	m_spriteInfo.clear();
+	sprites.clear();
 }
 
 /**
@@ -224,43 +253,52 @@ void Renderer2D::endBatch()
 */
 void Renderer2D::addSpriteVertices(SpriteInfo si)
 {
-	float posX = 2.0f * si.x / m_screenWidth - 1.0f;
-	float posY = -2.0f/ m_screenHeight * si.y + 1;
-
-	float scaleX = 2.f * si.w / m_screenWidth;
-	float scaleY = 2.f * si.h / m_screenHeight;
-
 	float uvPosx = float(si.sx) / si.imgX;
 	float uvPosy = float(si.sy) / si.imgY;
 
 	float uvScaleX = float(si.sw) / si.imgX;
 	float uvScaleY = float(si.sh) / si.imgY;
 
-	float top = posY;
-	float bot = posY - scaleY;
-	float left = posX;
-	float right = posX + scaleX;
+	glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(si.w, -si.h, 1.f));
+	glm::mat4 rotCenterTrans = glm::translate(glm::mat4(1.0f), glm::vec3(-(float)si.rotCenterX, -(float)si.rotCenterY, 0.0f));
+	glm::mat4 rot = glm::rotate(glm::mat4(1.0f), si.rotation, glm::vec3(0.0f, 0.f, -1.f));
+	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(si.x , si.y, 0.f));
 
+	glm::mat4 proj = glm::ortho(0.f, (float)m_screenWidth, (float)m_screenHeight, 0.f, 1.f, -1.f);
+	glm::mat4 MVP = proj * translate * rot * rotCenterTrans * scale;
+
+	glm::vec4 pos(-0.5f, 0.5f, si.depth, 1.f);
+	pos = MVP * pos;
 	Vertex TopLeft(
-		glm::vec3(left, top, 0.f),
+		//glm::vec3(left, top, si.depth),
+		glm::vec3(pos.x, pos.y, si.depth),
 		glm::vec3(si.r, si.g, si.b),
 		glm::vec2(uvPosx, uvPosy)
 	);
 
+	pos = glm::vec4(0.5f, 0.5f, si.depth, 1.f);
+	pos = MVP * pos;
 	Vertex TopRight(
-		glm::vec3(right, top, 0.f),
+		//glm::vec3(right, top, si.depth),
+		glm::vec3(pos.x, pos.y, si.depth),
 		glm::vec3(si.r, si.g, si.b),
 		glm::vec2(uvPosx + uvScaleX, uvPosy)
 	);
 
+	pos = glm::vec4(-0.5f, -0.5f, si.depth, 1.f);
+	pos = MVP * pos;
 	Vertex BotLeft(
-		glm::vec3(left, bot, 0.f),
+		//glm::vec3(left, bot, si.depth),
+		glm::vec3(pos.x, pos.y, si.depth),
 		glm::vec3(si.r, si.g, si.b),
 		glm::vec2(uvPosx, uvPosy + uvScaleY)
 	);
 
+	pos = glm::vec4(0.5f, -0.5f, si.depth, 1.f);
+	pos = MVP * pos;
 	Vertex BotRight(
-		glm::vec3(right, bot, 0.f),
+		//glm::vec3(right, bot, si.depth),
+		glm::vec3(pos.x, pos.y, si.depth),
 		glm::vec3(si.r, si.g, si.b),
 		glm::vec2(uvPosx + uvScaleX, uvPosy + uvScaleY)
 	);
@@ -278,7 +316,6 @@ void Renderer2D::useTexture(GLuint texID)
 {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texID);
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glUniform1i(m_shaderProgram.getSamplerLocation(), 0);
 }
 
